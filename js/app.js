@@ -13,29 +13,37 @@ const App = React.createClass({
         elements.push(ele);
         this.setState({elements});
     },
+    deleteElement(ele){
+        const elements = this.state.elements;
+        elements.splice(ele,1);
+        this.setState({elements});
+    },
     render: function () {
         const isEditor = this.state.isEditor;
         return <div>
             <button onClick={this.toggle}>{isEditor ? 'preview' : 'editor'}</button>
-            <Editor className={isEditor ? '' : 'hidden'} elements = {this.state.elements} onAdd={this.addElement}/>
-            <Preview className={isEditor ? 'hidden' : ''}/>
+            <Editor className={isEditor ? '' : 'hidden'} elements = {this.state.elements} onDelete = {this.deleteElement} onAdd={this.addElement}/>
+            <Preview className={isEditor ? 'hidden' : ''} elements = {this.state.elements}/>
         </div>
     }
 });
 const Editor = React.createClass({
     render: function () {
         return <div className={this.props.className}>
-            <Left elements = {this.props.elements}/>
+            <Left elements = {this.props.elements} onDelete = {this.props.onDelete}/>
             <Right onAdd={this.props.onAdd}/>
         </div>
     }
 });
 const Left = React.createClass({
+    remove:function (index) {
+      this.props.onDelete(index);
+    },
     render: function () {
         const elements = this.props.elements.map((ele, index)=> {
             return <div key={index}>
                 <input type={ele}/>
-                <input type="button" value='-'/>
+                <input type="button" value='-' onClick={this.remove.bind(this,index)}/>
             </div>
         })
         return <div >
@@ -60,8 +68,14 @@ const Right = React.createClass({
 
 const Preview = React.createClass({
     render: function () {
+        const elements = this.props.elements.map((ele,index)=>{
+            return <div>
+                <input type={ele}/>
+            </div>
+        })
         return <div className={this.props.className}>
-            editor
+            {elements}
+            <input type='submit' value='submit'/>
         </div>
     }
 });
