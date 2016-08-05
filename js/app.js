@@ -1,8 +1,12 @@
 const App = React.createClass({
     getInitialState: function () {
         return ({
-            elements: []
+            elements: [],
+            isEditor:true
         });
+    },
+    toggle:function () {
+      this.setState({isEditor:!this.state.isEditor})
     },
     addElement: function (ele) {
         const elements = this.state.elements;
@@ -17,8 +21,8 @@ const App = React.createClass({
     render: function () {
         return <div className="container">
             <center>
-                <ReactRouter.Link to="/preview">
-                    <button className="btn  btn-primary">preview</button>
+                <ReactRouter.Link to={this.state.isEditor?'/preview':'/'}>
+                    <button onClick={this.toggle} className="btn  btn-primary">{this.state.isEditor?'preview':'editor'}</button>
                 </ReactRouter.Link>
             </center>
 
