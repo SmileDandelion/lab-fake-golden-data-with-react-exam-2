@@ -1,12 +1,8 @@
 const App = React.createClass({
     getInitialState: function () {
         return ({
-            isEditor: true,
             elements: []
         });
-    },
-    toggle: function () {
-        this.setState({isEditor: !this.state.isEditor});
     },
     addElement: function (ele) {
         const elements = this.state.elements;
@@ -19,16 +15,19 @@ const App = React.createClass({
         this.setState({elements});
     },
     render: function () {
-        const isEditor = this.state.isEditor;
         return <div className="container">
             <center>
-                <button onClick={this.toggle} className="btn  btn-primary">{isEditor ? 'preview' : 'editor'}</button>
+                <ReactRouter.Link to="/preview">
+                    <button className="btn  btn-primary">preview</button>
+                </ReactRouter.Link>
             </center>
 
-            <Editor className={isEditor ? '' : 'hidden'} elements={this.state.elements}
-                    onDelete={this.deleteElement} onAdd={this.addElement}/>
-
-            <Preview className={isEditor ? 'hidden' : ''} elements={this.state.elements}/>
+            {this.props.children && React.cloneElement(this.props.children, {
+                elements: this.state.elements,
+                onAdd: this.addElement,
+                onDelete: this.deleteElement
+            })
+            }
         </div>
     }
 });
@@ -75,11 +74,11 @@ const Right = React.createClass({
     render: function () {
         return <div>
             <div className="input-group">
-                <input type="radio" name="element" value='text'     />
+                <input type="radio" name="element" value='text'/>
                 <span className="input-group-addon">text</span>
             </div>
             <div className="input-group">
-                <input type="radio" name="element" value='date'     />
+                <input type="radio" name="element" value='date'/>
                 <span className="input-group-addon">date</span>
             </div>
             <input type="button" className="btn  btn-primary" value='+' onClick={this.add}/>
@@ -101,4 +100,9 @@ const Preview = React.createClass({
     }
 });
 
-ReactDOM.render(<App/>, document.getElementById('content'));
+ReactDOM.render(<ReactRouter.Router>
+    <ReactRouter.Route path='/' component={App}>
+        <ReactRouter.IndexRoute component={Editor}/>
+        <ReactRouter.Route path='preview' component={Preview}/>
+    </ReactRouter.Route>
+</ReactRouter.Router>, document.getElementById('content'));
