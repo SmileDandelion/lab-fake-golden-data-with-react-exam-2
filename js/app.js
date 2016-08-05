@@ -2,11 +2,11 @@ const App = React.createClass({
     getInitialState: function () {
         return ({
             elements: [],
-            isEditor:true
+            isEditor: true
         });
     },
-    toggle:function () {
-      this.setState({isEditor:!this.state.isEditor})
+    toggle: function () {
+        this.setState({isEditor: !this.state.isEditor})
     },
     addElement: function (ele) {
         const elements = this.state.elements;
@@ -19,12 +19,16 @@ const App = React.createClass({
         this.setState({elements});
     },
     render: function () {
-        return <div className="container">
+        return <div className="container-fluid bg-success">
             <center>
-                <ReactRouter.Link to={this.state.isEditor?'/preview':'/'}>
-                    <button onClick={this.toggle} className="btn  btn-primary">{this.state.isEditor?'preview':'editor'}</button>
+                <ReactRouter.Link to={this.state.isEditor ? '/preview' : '/'}>
+                    <button onClick={this.toggle}
+                            className="btn  btn-primary">{this.state.isEditor ? 'preview' : 'editor'}</button>
                 </ReactRouter.Link>
             </center>
+            <br/>
+            <br/>
+            <br/>
 
             {this.props.children && React.cloneElement(this.props.children, {
                 elements: this.state.elements,
@@ -37,12 +41,12 @@ const App = React.createClass({
 });
 const Editor = React.createClass({
     render: function () {
-        return <div className={this.props.className}>
+        return <div >
             <div className='row'>
-                <div className="col-lg-5 ">
+                <div className="col-md-3 col-md-offset-2">
                     <Left elements={this.props.elements} onDelete={this.props.onDelete}/>
                 </div>
-                <div className="col-lg-5">
+                <div className="col-md-5 col-md-offset-2">
                     <Right onAdd={this.props.onAdd}/>
                 </div>
             </div>
@@ -62,6 +66,8 @@ const Left = React.createClass({
         <button className="btn btn-danger" type="button" onClick={this.remove.bind(this, index)}>-</button>
       </span>
                 </div>
+                <br/>
+                <br/>
             </div>
         });
         return <div >
@@ -78,13 +84,10 @@ const Right = React.createClass({
     render: function () {
         return <div>
             <div className="input-group">
-                <input type="radio" name="element" value='text'/>
-                <span className="input-group-addon">text</span>
+                <input type="radio" name="element" value='text'/>&nbsp;&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="element" value='date'/>&nbsp;&nbsp;&nbsp;date
             </div>
-            <div className="input-group">
-                <input type="radio" name="element" value='date'/>
-                <span className="input-group-addon">date</span>
-            </div>
+            <br/>
             <input type="button" className="btn  btn-primary" value='+' onClick={this.add}/>
         </div>
     }
@@ -93,13 +96,16 @@ const Right = React.createClass({
 const Preview = React.createClass({
     render: function () {
         const elements = this.props.elements.map((ele, index)=> {
-            return <div className="input-group col-lg-4" key={index}>
+            return <div className="input-group col-lg-offset-3 col-lg-6" key={index}>
                 <input type={ele} className="form-control" placeholder="please input ..."/>
+                <br/>
+                <br/>
+                <br/>
             </div>
         });
-        return <div className={this.props.className}>
+        return <div className="bg-success row">
             {elements}
-            <input type='submit' value='submit' className="btn btn-primary" disabled="disabled"/>
+            <center><input type='submit' value='submit' className="btn btn-primary" disabled="disabled"/></center>
         </div>
     }
 });
