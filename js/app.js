@@ -15,37 +15,52 @@ const App = React.createClass({
     },
     deleteElement(ele){
         const elements = this.state.elements;
-        elements.splice(ele,1);
+        elements.splice(ele, 1);
         this.setState({elements});
     },
     render: function () {
         const isEditor = this.state.isEditor;
-        return <div>
-            <button onClick={this.toggle}>{isEditor ? 'preview' : 'editor'}</button>
-            <Editor className={isEditor ? '' : 'hidden'} elements = {this.state.elements} onDelete = {this.deleteElement} onAdd={this.addElement}/>
-            <Preview className={isEditor ? 'hidden' : ''} elements = {this.state.elements}/>
+        return <div className="container">
+            <center>
+                <button onClick={this.toggle} className="btn  btn-primary">{isEditor ? 'preview' : 'editor'}</button>
+            </center>
+
+            <Editor className={isEditor ? '' : 'hidden'} elements={this.state.elements}
+                    onDelete={this.deleteElement} onAdd={this.addElement}/>
+
+            <Preview className={isEditor ? 'hidden' : ''} elements={this.state.elements}/>
         </div>
     }
 });
 const Editor = React.createClass({
     render: function () {
         return <div className={this.props.className}>
-            <Left elements = {this.props.elements} onDelete = {this.props.onDelete}/>
-            <Right onAdd={this.props.onAdd}/>
+            <div className='row'>
+                <div className="col-lg-5 ">
+                    <Left elements={this.props.elements} onDelete={this.props.onDelete}/>
+                </div>
+                <div className="col-lg-5">
+                    <Right onAdd={this.props.onAdd}/>
+                </div>
+            </div>
         </div>
     }
 });
 const Left = React.createClass({
-    remove:function (index) {
-      this.props.onDelete(index);
+    remove: function (index) {
+        this.props.onDelete(index);
     },
     render: function () {
         const elements = this.props.elements.map((ele, index)=> {
             return <div key={index}>
-                <input type={ele}/>
-                <input type="button" value='-' onClick={this.remove.bind(this,index)}/>
+                <div className="input-group">
+                    <input type={ele} className="form-control" placeholder="please input ..."/>
+                    <span className="input-group-btn">
+        <button className="btn btn-danger" type="button" onClick={this.remove.bind(this, index)}>-</button>
+      </span>
+                </div>
             </div>
-        })
+        });
         return <div >
             {elements}
         </div>
@@ -58,24 +73,30 @@ const Right = React.createClass({
         this.props.onAdd(elements);
     },
     render: function () {
-        return <div >
-            <input type='radio' name='element' value='text'/>text
-            <input type='radio' name='element' value='date'/>date
-            <input type="button" value='+' onClick={this.add}/>
+        return <div>
+            <div className="input-group">
+                <input type="radio" name="element" value='text'     />
+                <span className="input-group-addon">text</span>
+            </div>
+            <div className="input-group">
+                <input type="radio" name="element" value='date'     />
+                <span className="input-group-addon">date</span>
+            </div>
+            <input type="button" className="btn  btn-primary" value='+' onClick={this.add}/>
         </div>
     }
 });
 
 const Preview = React.createClass({
     render: function () {
-        const elements = this.props.elements.map((ele,index)=>{
-            return <div>
-                <input type={ele}/>
+        const elements = this.props.elements.map((ele, index)=> {
+            return <div className="input-group col-lg-4" key={index}>
+                <input type={ele} className="form-control" placeholder="please input ..."/>
             </div>
-        })
+        });
         return <div className={this.props.className}>
             {elements}
-            <input type='submit' value='submit'/>
+            <input type='submit' value='submit' className="btn btn-primary" disabled="disabled"/>
         </div>
     }
 });
